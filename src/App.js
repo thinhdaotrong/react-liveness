@@ -17,7 +17,7 @@ const getPoints4 = (landmarks) => {
   ];
 };
 
-const get4Points6 = (landmarks) => {
+const getPoints6 = (landmarks) => {
   return [
     landmarks[30].x,
     landmarks[30].y, // nose tip
@@ -72,7 +72,8 @@ function App() {
 
   const estimatePose = (positions) => {
     const numRows = 4;
-    const imagePoints = cv.matFromArray(numRows, 2, cv.CV_64FC1, getPoints4(positions));
+    // const imagePoints = cv.matFromArray(numRows, 2, cv.CV_64FC1, getPoints4(positions));
+    const imagePoints = cv.matFromArray(numRows, 2, cv.CV_64FC1);
     const modelPoints = cv.matFromArray(numRows, 3, cv.CV_64FC1, [
       0,
       0,
@@ -107,6 +108,10 @@ function App() {
       1,
     ]);
 
+    getPoints4.map((v, i) => {
+      imagePoints.data64F[i] = v;
+    });
+
     const distCoeffs = cv.Mat.zeros(4, 1, cv.CV_64FC1);
     const rotationVector = new cv.Mat({ width: 1, height: 3 }, cv.CV_64FC1); // cv.Mat.zeros(1, 3, cv.CV_64FC1);
     const translationVector = new cv.Mat({ width: 1, height: 3 }, cv.CV_64FC1); // cv.Mat.zeros(1, 3, cv.CV_64FC1);
@@ -139,8 +144,6 @@ function App() {
       true
     );
     if (!success) return;
-
-    console.log(success);
 
     let rotationVectorDegree = rotationVector.data64F.map((d) => (d / Math.PI) * 180);
     console.log('rotationVectorDegree: ', rotationVectorDegree[0]);
