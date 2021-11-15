@@ -3,6 +3,7 @@ import './App.css';
 import { useCallback, useEffect, useRef } from 'react';
 import { useOpenCv } from 'opencv-react';
 import * as faceapi from 'face-api.js';
+import opencv from 'opencv';
 
 const getPoints4 = (landmarks) => {
   return [
@@ -38,7 +39,7 @@ function App() {
   const videoRef = useRef(null);
   const canvasRef = useRef();
   const imgRef = useRef();
-  const { loaded: openCvLoaded, cv } = useOpenCv();
+  const { loaded: openCvLoaded } = useOpenCv();
 
   const startVideo = useCallback(() => {
     navigator.mediaDevices
@@ -70,7 +71,8 @@ function App() {
   //   }
   // }, [openCvLoaded, cv]);
 
-  const estimatePose = (positions) => {
+  const estimatePose = async (positions) => {
+    const cv = await opencv;
     const numRows = 4;
     const imagePoints = cv.matFromArray(numRows, 2, cv.CV_64FC1, getPoints4(positions));
     // const imagePoints = cv.matFromArray(numRows, 2, cv.CV_64FC1);
@@ -177,25 +179,28 @@ function App() {
     return rotationVectorDegree;
   };
 
-  const estimatePose2 = (positions) => {
+  const estimatePose2 = async (positions) => {
+    const cv = await opencv;
     const numRows = 6;
-    const imagePoints = cv.matFromArray(numRows, 2, cv.CV_64FC1, getPoints4(positions));
+    const imagePoints = cv.matFromArray(numRows, 2, cv.CV_64FC1, getPoints6(positions));
     const modelPoints = cv.matFromArray(numRows, 3, cv.CV_64FC1, [
       0,
       0,
       0, // Nose tip
-      0,
-      0,
-      0, // Nose tip
-      // 0, -330, -65, // Chin
+      -330,
+      -65, // Chin
       -225,
       170,
       -135, // Left eye left corner
       225,
       170,
       -135, // Right eye right corne
-      // -150, -150, -125,  // Left Mouth corner
-      // 150, -150, -125,  // Right mouth corner
+      -150,
+      -150,
+      -125, // Left Mouth corner
+      150,
+      -150,
+      -125, // Right mouth corner
     ]);
 
     const size = { width: 640, height: 480 };
@@ -217,6 +222,7 @@ function App() {
     const distCoeffs = cv.Mat.zeros(4, 1, cv.CV_64FC1);
     const rotationVector = cv.Mat.zeros(1, 3, cv.CV_64FC1);
     const translationVector = cv.Mat.zeros(1, 3, cv.CV_64FC1);
+
     cv.solvePnP(modelPoints, imagePoints, cameraMatrix, distCoeffs, rotationVector, translationVector);
     const rotationVectorMatrix = cv.Mat.zeros(3, 3, cv.CV_64FC1);
     cv.Rodrigues(rotationVector, rotationVectorMatrix);
