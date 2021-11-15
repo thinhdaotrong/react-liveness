@@ -140,8 +140,10 @@ function App() {
     );
     if (!success) return;
 
+    console.log(success);
+
     let rotationVectorDegree = rotationVector.data64F.map((d) => (d / Math.PI) * 180);
-    console.log('rotationVectorDegree: ', rotationVectorDegree);
+    console.log('rotationVectorDegree: ', rotationVectorDegree[0]);
 
     imagePoints.delete();
     modelPoints.delete();
@@ -160,7 +162,6 @@ function App() {
       .withFaceExpressions();
 
     if (result) {
-      console.log('result: ', result);
       const rotationVectorDegree = estimatePose(result.landmarks.positions);
     }
 
