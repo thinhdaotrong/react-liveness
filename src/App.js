@@ -108,7 +108,16 @@ function App() {
       1,
     ]);
 
-    getPoints4(positions).map((v, i) => {
+    [
+      positions[30].x,
+      positions[30].y, // nose tip
+      positions[30].x,
+      positions[30].y, // nose tip
+      positions[36].x,
+      positions[36].y, // left corner of left eye
+      positions[45].x,
+      positions[45].y, // right corner of right eye
+    ].map((v, i) => {
       imagePoints.data64F[i] = v;
     });
 
@@ -134,6 +143,11 @@ function App() {
       rotationVector.data64F[2] = -3.0;
     }
 
+    console.log(
+      '1',
+      rotationVector.data64F.map((d) => (d / Math.PI) * 180)
+    );
+
     const success = cv.solvePnP(
       modelPoints,
       imagePoints,
@@ -145,8 +159,13 @@ function App() {
     );
     if (!success) return;
 
+    console.log(
+      '2',
+      rotationVector.data64F.map((d) => (d / Math.PI) * 180)
+    );
+
     let rotationVectorDegree = rotationVector.data64F.map((d) => (d / Math.PI) * 180);
-    console.log('rotationVectorDegree: ', rotationVectorDegree[0]);
+    // console.log('rotationVectorDegree: ', rotationVectorDegree[0]);
 
     imagePoints.delete();
     modelPoints.delete();
