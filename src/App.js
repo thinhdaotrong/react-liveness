@@ -108,7 +108,7 @@ function App() {
       1,
     ]);
 
-    getPoints4.map((v, i) => {
+    getPoints4(positions).map((v, i) => {
       imagePoints.data64F[i] = v;
     });
 
