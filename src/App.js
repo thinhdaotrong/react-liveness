@@ -550,7 +550,7 @@ function App() {
       setMatTrai(matTrai);
       setMatPhai(matPhai);
       faceapi.draw.drawDetections(canvasRef.current, resizedResult);
-      faceapi.draw.drawFaceLandmarks(canvasRef.current, resizedResult);
+      // faceapi.draw.drawFaceLandmarks(canvasRef.current, resizedResult);
     }
 
     setTimeout(() => onPlay(), 100);
@@ -594,9 +594,9 @@ function App() {
         style={{
           position: 'absolute',
           left: mui.x,
-          right: mui.y,
+          top: mui.y,
           width: 2,
-          right: 2,
+          height: 2,
           borderRadius: '50%',
           background: 'red',
         }}
@@ -605,9 +605,9 @@ function App() {
         style={{
           position: 'absolute',
           left: matTrai.x,
-          right: matTrai.y,
+          top: matTrai.y,
           width: 2,
-          right: 2,
+          height: 2,
           borderRadius: '50%',
           background: 'red',
         }}
@@ -616,9 +616,9 @@ function App() {
         style={{
           position: 'absolute',
           left: matPhai.x,
-          right: matPhai.y,
+          top: matPhai.y,
           width: 2,
-          right: 2,
+          height: 2,
           borderRadius: '50%',
           background: 'red',
         }}
