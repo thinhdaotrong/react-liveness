@@ -411,7 +411,7 @@ function App() {
       rvec.data64F.map((d) => (d / Math.PI) * 180)
     );
 
-    // let rvecDegree = rvec.data64F.map((d) => (d / Math.PI) * 180);
+    let rvecDegree = rvec.data64F.map((d) => (d / Math.PI) * 180);
     // console.log('rvecDegree: ', rvecDegree);
 
     imagePoints.delete();
