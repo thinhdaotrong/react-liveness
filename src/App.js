@@ -120,7 +120,7 @@ function App() {
 
     const ns = positions[30];
     const le = positions[36];
-    const ns = positions[45];
+    const re = positions[45];
 
     [
       ns.x,
