@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useOpenCv } from 'opencv-react';
 import * as faceapi from 'face-api.js';
 import opencv from 'opencv';
