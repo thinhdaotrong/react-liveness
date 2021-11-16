@@ -115,8 +115,11 @@ function App() {
     const tvec = new cv.Mat({ width: 1, height: 3 }, cv.CV_64FC1);
 
     const ns = positions[30];
-    const le = positions[37];
-    const re = positions[44];
+    const le = positions[39];
+    const re = positions[42];
+
+    // const le = positions[37];
+    // const re = positions[44];
 
     // const ns = positions[30];
     // const le = positions[36];
