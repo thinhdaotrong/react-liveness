@@ -117,8 +117,12 @@ function App() {
     const tvec = new cv.Mat({ width: 1, height: 3 }, cv.CV_64FC1);
 
     const ns = positions[30];
-    const le = positions[36];
-    const re = positions[45];
+    const le = positions[37];
+    const re = positions[44];
+
+    // const ns = positions[30];
+    // const le = positions[36];
+    // const re = positions[45];
 
     [
       ns.x,
@@ -530,7 +534,7 @@ function App() {
       .withFaceLandmarks();
 
     if (result) {
-      const rotationVectorDegree = estimatePose5(result.landmarks.positions);
+      const rotationVectorDegree = estimatePose(result.landmarks.positions);
 
       const dims = faceapi.matchDimensions(canvasRef.current, videoRef.current, true);
       const resizedResult = faceapi.resizeResults(result, dims);
