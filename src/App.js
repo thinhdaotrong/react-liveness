@@ -171,13 +171,13 @@ function App() {
     // );
 
     let rvecDegree = rvec.data64F.map((d) => (d / Math.PI) * 180);
-    console.log('rvecDegree: ', rvecDegree[0]);
+    console.log('rvecDegree: ', rvecDegree);
 
     // cv.projectPoints(pointZ, rvec, tvec, cameraMatrix, distCoeffs, noseEndPoint2DZ, jaco);
     // cv.projectPoints(pointY, rvec, tvec, cameraMatrix, distCoeffs, nose_end_point2DY, jaco);
     // cv.projectPoints(pointX, rvec, tvec, cameraMatrix, distCoeffs, nose_end_point2DX, jaco);
 
-    let im = cv.imread(document.querySelector('canvas'));
+    let im = cv.imread(canvasRef.current);
     for (var i = 0; i < numRows; i++) {
       cv.circle(
         im,
@@ -209,7 +209,7 @@ function App() {
     cv.line(im, pNose, p4, [0, 0, 255, 255], 2);
 
     // Display image
-    cv.imshow(document.querySelector('canvas'), im);
+    cv.imshow(canvasRef.current, im);
     im.delete();
 
     imagePoints.delete();
