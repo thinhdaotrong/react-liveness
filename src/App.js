@@ -539,8 +539,10 @@ function App() {
 
       const dims = faceapi.matchDimensions(canvasRef.current, videoRef.current, true);
       const resizedResult = faceapi.resizeResults(result, dims);
+      const filteredPositions = resizedResult.landmarks.positions.filter((p, i) => [30, 36, 45].includes(i));
+      const abc = { ...resizedResult, landmarks: { ...resizedResult.landmarks, positions: filteredPositions } };
       faceapi.draw.drawDetections(canvasRef.current, resizedResult);
-      faceapi.draw.drawFaceLandmarks(canvasRef.current, resizedResult);
+      faceapi.draw.drawFaceLandmarks(canvasRef.current, abc);
     }
 
     setTimeout(() => onPlay(), 100);
