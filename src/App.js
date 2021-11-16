@@ -119,7 +119,7 @@ function App() {
     const jaco = new cv.Mat();
 
     const ns = positions[30];
-    const le = le;
+    const le = positions[36];
     const ns = positions[45];
 
     [
