@@ -486,6 +486,10 @@ function App() {
     const rvec = new cv.Mat({ width: 1, height: 3 }, cv.CV_64FC1);
     const tvec = new cv.Mat({ width: 1, height: 3 }, cv.CV_64FC1);
 
+    const ns = positions[30];
+    const le = positions[36];
+    const re = positions[45];
+
     // Hack! initialize transition and rotation matrixes to improve estimation
     tvec.data64F[0] = -100;
     tvec.data64F[1] = 100;
