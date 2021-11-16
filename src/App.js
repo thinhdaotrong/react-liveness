@@ -347,6 +347,102 @@ function App() {
     return rvecDegree;
   };
 
+  const estimatePose4 = async (positions) => {
+    // const cv = await opencv;
+    const numRows = 4;
+    const modelPoints = cv.matFromArray(numRows, 3, cv.CV_64FC1, [
+      0.0,
+      0.0,
+      0.0, // Nose tip
+      0.0,
+      0.0,
+      0.0, // HACK! solvePnP doesn't work with 3 points, so copied the
+      //   first point to make the input 4 points
+      // 0.0, -330.0, -65.0,  // Chin
+      -225.0,
+      170.0,
+      -135.0, // Left eye left corner
+      225.0,
+      170.0,
+      -135.0, // Right eye right corne
+      // -150.0, -150.0, -125.0,  // Left Mouth corner
+      // 150.0, -150.0, -125.0,  // Right mouth corner
+    ]);
+    console.log('modelPoints: ', modelPoints);
+
+    // Camera internals
+    const size = { width: 640, height: 480 };
+    const focalLength = size.width;
+    const center = [size.width / 2, size.height / 2];
+    const cameraMatrix = cv.matFromArray(3, 3, cv.CV_64FC1, [
+      focalLength,
+      0,
+      center[0],
+      0,
+      focalLength,
+      center[1],
+      0,
+      0,
+      1,
+    ]);
+    console.log('cameraMatrix: ', cameraMatrix);
+
+    const imagePoints = cv.Mat.zeros(numRows, 2, cv.CV_64FC1);
+    const distCoeffs = cv.Mat.zeros(4, 1, cv.CV_64FC1); // Assuming no lens distortion
+    const rvec = new cv.Mat({ width: 1, height: 3 }, cv.CV_64FC1);
+    const tvec = new cv.Mat({ width: 1, height: 3 }, cv.CV_64FC1);
+
+    const ns = positions[30];
+    const le = positions[36];
+    const re = positions[45];
+
+    [
+      ns.x,
+      ns.y, // nose tip
+      ns.x,
+      ns.y, // nose tip
+      le.x,
+      le.y, // left corner of left eye
+      re.x,
+      re.y, // right corner of right eye
+    ].map((v, i) => {
+      imagePoints.data64F[i] = v;
+    });
+
+    // Hack! initialize transition and rotation matrixes to improve estimation
+    // tvec.data64F[0] = -100;
+    // tvec.data64F[1] = 100;
+    // tvec.data64F[2] = 1000;
+    // const distToLeftEyeX = Math.abs(le.x - ns.x);
+    // const distToRightEyeX = Math.abs(re.x - ns.x);
+    // if (distToLeftEyeX < distToRightEyeX) {
+    //   // looking at left
+    //   rvec.data64F[0] = -1.0;
+    //   rvec.data64F[1] = -0.75;
+    //   rvec.data64F[2] = -3.0;
+    // } else {
+    //   // looking at right
+    //   rvec.data64F[0] = 1.0;
+    //   rvec.data64F[1] = -0.75;
+    //   rvec.data64F[2] = -3.0;
+    // }
+
+    const success = cv.solvePnP(modelPoints, imagePoints, cameraMatrix, distCoeffs, rvec, tvec, true);
+    if (!success) return;
+
+    let rvecDegree = rvec.data64F.map((d) => (d / Math.PI) * 180);
+    console.log('rvecDegree: ', rvecDegree);
+
+    imagePoints.delete();
+    modelPoints.delete();
+    cameraMatrix.delete();
+    distCoeffs.delete();
+    rvec.delete();
+    tvec.delete();
+
+    return rvecDegree;
+  };
+
   const onPlay = async () => {
     const result = await faceapi
       .detectSingleFace(videoRef.current, new faceapi.TinyFaceDetectorOptions())
@@ -354,7 +450,7 @@ function App() {
 
     if (result) {
       console.log('result: ', result);
-      const rotationVectorDegree = estimatePose3(result.landmarks.positions);
+      const rotationVectorDegree = estimatePose4(result.landmarks.positions);
 
       const dims = faceapi.matchDimensions(canvasRef.current, videoRef.current, true);
       const resizedResult = faceapi.resizeResults(result, dims);
