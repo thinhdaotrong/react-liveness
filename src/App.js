@@ -74,30 +74,29 @@ function App() {
   const estimatePose = async (positions) => {
     // const cv = await opencv;
     const numRows = 4;
-    // const imagePoints = cv.matFromArray(numRows, 2, cv.CV_64FC1, getPoints4(positions));
-    const imagePoints = cv.matFromArray(numRows, 2, cv.CV_64FC1);
     const modelPoints = cv.matFromArray(numRows, 3, cv.CV_64FC1, [
-      0,
-      0,
-      0, // Nose tip
-      0,
-      0,
-      0, // Nose tip
-      // 0, -330, -65, // Chin
-      -225,
-      170,
-      -135, // Left eye left corner
-      225,
-      170,
-      -135, // Right eye right corne
-      // -150, -150, -125,  // Left Mouth corner
-      // 150, -150, -125,  // Right mouth corner
+      0.0,
+      0.0,
+      0.0, // Nose tip
+      0.0,
+      0.0,
+      0.0, // HACK! solvePnP doesn't work with 3 points, so copied the
+      //   first point to make the input 4 points
+      // 0.0, -330.0, -65.0,  // Chin
+      -225.0,
+      170.0,
+      -135.0, // Left eye left corner
+      225.0,
+      170.0,
+      -135.0, // Right eye right corne
+      // -150.0, -150.0, -125.0,  // Left Mouth corner
+      // 150.0, -150.0, -125.0,  // Right mouth corner
     ]);
 
+    // Camera internals
     const size = { width: 640, height: 480 };
     const focalLength = size.width;
     const center = [size.width / 2, size.height / 2];
-
     const cameraMatrix = cv.matFromArray(3, 3, cv.CV_64FC1, [
       focalLength,
       0,
@@ -109,6 +108,11 @@ function App() {
       0,
       1,
     ]);
+
+    const imagePoints = cv.Mat.zeros(numRows, 2, cv.CV_64FC1);
+    const distCoeffs = cv.Mat.zeros(4, 1, cv.CV_64FC1); // Assuming no lens distortion
+    const rvec = new cv.Mat({ width: 1, height: 3 }, cv.CV_64FC1);
+    const tvec = new cv.Mat({ width: 1, height: 3 }, cv.CV_64FC1);
 
     const pointZ = cv.matFromArray(1, 3, cv.CV_64FC1, [0.0, 0.0, 500.0]);
     const pointY = cv.matFromArray(1, 3, cv.CV_64FC1, [0.0, 500.0, 0.0]);
@@ -134,10 +138,6 @@ function App() {
     ].map((v, i) => {
       imagePoints.data64F[i] = v;
     });
-
-    const distCoeffs = cv.Mat.zeros(4, 1, cv.CV_64FC1);
-    const rvec = new cv.Mat({ width: 1, height: 3 }, cv.CV_64FC1);
-    const tvec = new cv.Mat({ width: 1, height: 3 }, cv.CV_64FC1);
 
     // Hack! initialize transition and rotation matrixes to improve estimation
     tvec.data64F[0] = -100;
