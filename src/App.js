@@ -308,23 +308,6 @@ function App() {
     const rvec = cv.Mat.zeros(1, 3, cv.CV_64FC1);
     const tvec = cv.Mat.zeros(1, 3, cv.CV_64FC1);
 
-    // [
-    //   positions[30].x,
-    //   positions[30].y, // nose tip
-    //   positions[8].x,
-    //   positions[8].y, // chin
-    //   positions[36].x,
-    //   positions[36].y, // left corner of left eye
-    //   positions[45].x,
-    //   positions[45].y, // right corner of right eye
-    //   positions[48].x,
-    //   positions[48].y, // left corner of mouth
-    //   positions[54].x,
-    //   positions[54].y, // right corner of mouth
-    // ].map((v, i) => {
-    //   imagePoints.data64F[i] = v;
-    // });
-
     // Hack! initialize transition and rotation matrixes to improve estimation
     // tvec.data64F[0] = -100;
     // tvec.data64F[1] = 100;
@@ -367,12 +350,11 @@ function App() {
   const onPlay = async () => {
     const result = await faceapi
       .detectSingleFace(videoRef.current, new faceapi.TinyFaceDetectorOptions())
-
       .withFaceLandmarks();
 
     if (result) {
       console.log('result: ', result);
-      const rotationVectorDegree = estimatePose(result.landmarks.positions);
+      const rotationVectorDegree = estimatePose3(result.landmarks.positions);
 
       const dims = faceapi.matchDimensions(canvasRef.current, videoRef.current, true);
       const resizedResult = faceapi.resizeResults(result, dims);
