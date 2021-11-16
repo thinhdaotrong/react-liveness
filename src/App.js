@@ -136,50 +136,42 @@ function App() {
     });
 
     const distCoeffs = cv.Mat.zeros(4, 1, cv.CV_64FC1);
-    const rotationVector = new cv.Mat({ width: 1, height: 3 }, cv.CV_64FC1);
-    const translationVector = new cv.Mat({ width: 1, height: 3 }, cv.CV_64FC1);
+    const rvec = new cv.Mat({ width: 1, height: 3 }, cv.CV_64FC1);
+    const tvec = new cv.Mat({ width: 1, height: 3 }, cv.CV_64FC1);
 
     // Hack! initialize transition and rotation matrixes to improve estimation
-    translationVector.data64F[0] = -100;
-    translationVector.data64F[1] = 100;
-    translationVector.data64F[2] = 1000;
+    tvec.data64F[0] = -100;
+    tvec.data64F[1] = 100;
+    tvec.data64F[2] = 1000;
     const distToLeftEyeX = Math.abs(le.x - ns.x);
     const distToRightEyeX = Math.abs(re.x - ns.x);
     if (distToLeftEyeX < distToRightEyeX) {
       // looking at left
-      rotationVector.data64F[0] = -1.0;
-      rotationVector.data64F[1] = -0.75;
-      rotationVector.data64F[2] = -3.0;
+      rvec.data64F[0] = -1.0;
+      rvec.data64F[1] = -0.75;
+      rvec.data64F[2] = -3.0;
     } else {
       // looking at right
-      rotationVector.data64F[0] = 1.0;
-      rotationVector.data64F[1] = -0.75;
-      rotationVector.data64F[2] = -3.0;
+      rvec.data64F[0] = 1.0;
+      rvec.data64F[1] = -0.75;
+      rvec.data64F[2] = -3.0;
     }
 
     // console.log(
     //   '1',
-    //   rotationVector.data64F.map((d) => (d / Math.PI) * 180)
+    //   rvec.data64F.map((d) => (d / Math.PI) * 180)
     // );
 
-    const success = cv.solvePnP(
-      modelPoints,
-      imagePoints,
-      cameraMatrix,
-      distCoeffs,
-      rotationVector,
-      translationVector,
-      true
-    );
+    const success = cv.solvePnP(modelPoints, imagePoints, cameraMatrix, distCoeffs, rvec, tvec, true);
     if (!success) return;
 
     // console.log(
     //   '2',
-    //   rotationVector.data64F.map((d) => (d / Math.PI) * 180)
+    //   rvec.data64F.map((d) => (d / Math.PI) * 180)
     // );
 
-    let rotationVectorDegree = rotationVector.data64F.map((d) => (d / Math.PI) * 180);
-    console.log('rotationVectorDegree: ', rotationVectorDegree[0]);
+    let rvecDegree = rvec.data64F.map((d) => (d / Math.PI) * 180);
+    console.log('rvecDegree: ', rvecDegree[0]);
 
     cv.projectPoints(pointZ, rvec, tvec, cameraMatrix, distCoeffs, noseEndPoint2DZ, jaco);
     cv.projectPoints(pointY, rvec, tvec, cameraMatrix, distCoeffs, nose_end_point2DY, jaco);
@@ -224,8 +216,8 @@ function App() {
     modelPoints.delete();
     cameraMatrix.delete();
     distCoeffs.delete();
-    rotationVector.delete();
-    translationVector.delete();
+    rvec.delete();
+    tvec.delete();
     pointZ.delete();
     pointY.delete();
     pointX.delete();
@@ -234,7 +226,7 @@ function App() {
     nose_end_point2DX.delete();
     jaco.delete();
 
-    return rotationVectorDegree;
+    return rvecDegree;
   };
 
   const estimatePose2 = async (positions) => {
