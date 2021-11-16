@@ -173,9 +173,9 @@ function App() {
     let rvecDegree = rvec.data64F.map((d) => (d / Math.PI) * 180);
     console.log('rvecDegree: ', rvecDegree[0]);
 
-    cv.projectPoints(pointZ, rvec, tvec, cameraMatrix, distCoeffs, noseEndPoint2DZ, jaco);
-    cv.projectPoints(pointY, rvec, tvec, cameraMatrix, distCoeffs, nose_end_point2DY, jaco);
-    cv.projectPoints(pointX, rvec, tvec, cameraMatrix, distCoeffs, nose_end_point2DX, jaco);
+    // cv.projectPoints(pointZ, rvec, tvec, cameraMatrix, distCoeffs, noseEndPoint2DZ, jaco);
+    // cv.projectPoints(pointY, rvec, tvec, cameraMatrix, distCoeffs, nose_end_point2DY, jaco);
+    // cv.projectPoints(pointX, rvec, tvec, cameraMatrix, distCoeffs, nose_end_point2DX, jaco);
 
     let im = cv.imread(document.querySelector('canvas'));
     for (var i = 0; i < numRows; i++) {
