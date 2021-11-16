@@ -595,8 +595,8 @@ function App() {
           position: 'absolute',
           left: mui.x,
           top: mui.y,
-          width: 2,
-          height: 2,
+          width: 4,
+          height: 4,
           borderRadius: '50%',
           background: 'red',
         }}
@@ -606,8 +606,8 @@ function App() {
           position: 'absolute',
           left: matTrai.x,
           top: matTrai.y,
-          width: 2,
-          height: 2,
+          width: 4,
+          height: 4,
           borderRadius: '50%',
           background: 'red',
         }}
@@ -617,8 +617,8 @@ function App() {
           position: 'absolute',
           left: matPhai.x,
           top: matPhai.y,
-          width: 2,
-          height: 2,
+          width: 4,
+          height: 4,
           borderRadius: '50%',
           background: 'red',
         }}
