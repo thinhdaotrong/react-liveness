@@ -359,7 +359,8 @@ function App() {
       1,
     ]);
 
-    const imagePoints = cv.Mat.zeros(numRows, 2, cv.CV_64FC1);
+    // const imagePoints = cv.Mat.zeros(numRows, 2, cv.CV_64FC1);
+    const imagePoints = cv.matFromArray(6, 2, cv.CV_64FC1, getPoints6(positions));
     const distCoeffs = cv.Mat.zeros(4, 1, cv.CV_64FC1); // Assuming no lens distortion
     const rvec = new cv.Mat({ width: 1, height: 3 }, cv.CV_64FC1);
     const tvec = new cv.Mat({ width: 1, height: 3 }, cv.CV_64FC1);
@@ -504,6 +505,12 @@ function App() {
 
     if (result) {
       const rotationVectorDegree = estimatePose3(result.landmarks.positions);
+
+      const dims = faceapi.matchDimensions(canvasRef.current, videoRef.current, true);
+      const resizedResult = faceapi.resizeResults(result, dims);
+      faceapi.draw.drawDetections(canvasRef.current, resizedResult);
+      faceapi.draw.drawFaceLandmarks(canvasRef.current, resizedResult);
+      faceapi.draw.drawFaceExpressions(canvasRef.current, resizedResult);
     }
 
     setTimeout(() => onPlay(), 100);
@@ -529,7 +536,7 @@ function App() {
   }
 
   return (
-    <div className='App'>
+    <div className='App' style={{ position: 'relative' }}>
       <video
         ref={videoRef}
         width={640}
@@ -542,7 +549,7 @@ function App() {
         }}
       />
       <img ref={imgRef} />
-      <canvas ref={canvasRef} style={{ display: 'none' }} />
+      <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0 }} />
       <button onClick={capture}>chụp</button>
     </div>
   );
