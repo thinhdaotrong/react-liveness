@@ -41,6 +41,10 @@ function App() {
   const imgRef = useRef();
   const { loaded: openCvLoaded, cv } = useOpenCv();
 
+  const [mui, setMui] = useState({ x: 0, y: 0 });
+  const [matTrai, setMatTrai] = useState({ x: 0, y: 0 });
+  const [matPhai, setMatPhai] = useState({ x: 0, y: 0 });
+
   const startVideo = useCallback(() => {
     navigator.mediaDevices
       .getUserMedia({ video: { width: 640, height: 480 } })
@@ -539,10 +543,14 @@ function App() {
 
       const dims = faceapi.matchDimensions(canvasRef.current, videoRef.current, true);
       const resizedResult = faceapi.resizeResults(result, dims);
-      const filteredPositions = resizedResult.landmarks.positions.filter((p, i) => [30, 36, 45].includes(i));
-      const abc = { ...resizedResult, landmarks: { ...resizedResult.landmarks, positions: filteredPositions } };
+      const mui = resizedResult.landmarks.positions[30];
+      const matTrai = resizedResult.landmarks.positions[36];
+      const matPhai = resizedResult.landmarks.positions[45];
+      setMui(mui);
+      setMatTrai(matTrai);
+      setMatPhai(matPhai);
       faceapi.draw.drawDetections(canvasRef.current, resizedResult);
-      faceapi.draw.drawFaceLandmarks(canvasRef.current, abc);
+      faceapi.draw.drawFaceLandmarks(canvasRef.current, resizedResult);
     }
 
     setTimeout(() => onPlay(), 100);
@@ -582,6 +590,39 @@ function App() {
       />
       <img ref={imgRef} />
       <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0 }} />
+      <div
+        style={{
+          position: 'absolute',
+          left: mui.x,
+          right: mui.y,
+          width: 2,
+          right: 2,
+          borderRadius: '50%',
+          background: 'red',
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          left: matTrai.x,
+          right: matTrai.y,
+          width: 2,
+          right: 2,
+          borderRadius: '50%',
+          background: 'red',
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          left: matPhai.x,
+          right: matPhai.y,
+          width: 2,
+          right: 2,
+          borderRadius: '50%',
+          background: 'red',
+        }}
+      />
       <button onClick={capture}>chụp</button>
     </div>
   );
