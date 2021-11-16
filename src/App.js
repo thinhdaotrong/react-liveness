@@ -92,7 +92,6 @@ function App() {
       // -150.0, -150.0, -125.0,  // Left Mouth corner
       // 150.0, -150.0, -125.0,  // Right mouth corner
     ]);
-    console.log('modelPoints: ', modelPoints);
 
     // Camera internals
     const size = { width: 640, height: 480 };
@@ -109,7 +108,6 @@ function App() {
       0,
       1,
     ]);
-    console.log('cameraMatrix: ', cameraMatrix);
 
     const imagePoints = cv.Mat.zeros(numRows, 2, cv.CV_64FC1);
     const distCoeffs = cv.Mat.zeros(4, 1, cv.CV_64FC1); // Assuming no lens distortion
