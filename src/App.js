@@ -123,6 +123,7 @@ function App() {
     const jaco = new cv.Mat();
 
     const ns = positions[30];
+    console.log('ns: ', ns);
     const le = positions[36];
     const re = positions[45];
 
@@ -157,18 +158,13 @@ function App() {
       rvec.data64F[2] = -3.0;
     }
 
-    // console.log(
-    //   '1',
-    //   rvec.data64F.map((d) => (d / Math.PI) * 180)
-    // );
+    console.log(
+      'truoc',
+      rvec.data64F.map((d) => (d / Math.PI) * 180)
+    );
 
     const success = cv.solvePnP(modelPoints, imagePoints, cameraMatrix, distCoeffs, rvec, tvec, true);
     if (!success) return;
-
-    // console.log(
-    //   '2',
-    //   rvec.data64F.map((d) => (d / Math.PI) * 180)
-    // );
 
     let rvecDegree = rvec.data64F.map((d) => (d / Math.PI) * 180);
     console.log('rvecDegree: ', rvecDegree);
@@ -435,7 +431,7 @@ function App() {
 
     if (result) {
       console.log('result: ', result);
-      const rotationVectorDegree = estimatePose3(result.landmarks.positions);
+      const rotationVectorDegree = estimatePose(result.landmarks.positions);
 
       const dims = faceapi.matchDimensions(canvasRef.current, videoRef.current, true);
       const resizedResult = faceapi.resizeResults(result, dims);
