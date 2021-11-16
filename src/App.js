@@ -39,7 +39,7 @@ function App() {
   const videoRef = useRef(null);
   const canvasRef = useRef();
   const imgRef = useRef();
-  const { loaded: openCvLoaded } = useOpenCv();
+  const { loaded: openCvLoaded, cv } = useOpenCv();
 
   const startVideo = useCallback(() => {
     navigator.mediaDevices
@@ -72,7 +72,7 @@ function App() {
   // }, [openCvLoaded, cv]);
 
   const estimatePose = async (positions) => {
-    const cv = await opencv;
+    // const cv = await opencv;
     const numRows = 4;
     // const imagePoints = cv.matFromArray(numRows, 2, cv.CV_64FC1, getPoints4(positions));
     const imagePoints = cv.matFromArray(numRows, 2, cv.CV_64FC1);
